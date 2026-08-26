@@ -12,45 +12,45 @@ datasource db {
   provider = "postgresql"
 }
 
-model users {
+model Users {
   id Int @id @default(autoincrement())
   name      String
   email     String   @unique
-  password  String
+  password_hash  String
   createdAt DateTime @default(now())
 }
-model notes {
+model Notes {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
-  bg_color string
+  bg_color String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-   user_Id Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+   users_Id Int
+  users   Users @relation(fields: [users_Id], references: [id], onDelete: Cascade)
 }
 
-model tags {
+model Tags {
   id Int @id@default(autoincrement)
-  tag_name string @unique
+  tag_name String @unique
   users_id  Int
-  user user @relation(fields:[users_id],references:[id],onDelete:Cascade)
+  user Users @relation(fields:[users_id],references:[id],onDelete:Cascade)
 }
 
-model AI_conversation {
-  id  Int @id @default (autoincrement())'
-  question string 
-  answer string 
+model AI_Conversation {
+  id  Int @id @default (autoincrement())
+  question String 
+  answer String 
   users_id Int
 
-  user user @relation(fields:[users_id], references:[id])
+   user Users @relation(fields:[users_id], references:[id])
 } 
 
-model note_tags{
+model Note_Tags{
   notes_id Int
   tags_id  Int
 
-  notes notes @relation(fields:[notes_id], relation:[id], onDelete:Cascade)
-  tags tags @relation(fields:[tags_id], relation:[id], onDelete:Cascade)
+  notes Notes @relation(fields:[notes_id], references:[id], onDelete:Cascade)
+  tags Tags @relation(fields:[tags_id], references:[id], onDelete:Cascade)
   
 }
