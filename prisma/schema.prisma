@@ -19,3 +19,38 @@ model users {
   password  String
   createdAt DateTime @default(now())
 }
+model notes {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  bg_color string
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+   user_Id Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model tags {
+  id Int @id@default(autoincrement)
+  tag_name string @unique
+  users_id  Int
+  user user @relation(fields:[users_id],references:[id],onDelete:Cascade)
+}
+
+model AI_conversation {
+  id  Int @id @default (autoincrement())'
+  question string 
+  answer string 
+  users_id Int
+
+  user user @relation(fields:[users_id], references:[id])
+} 
+
+model note_tags{
+  notes_id Int
+  tags_id  Int
+
+  notes notes @relation(fields:[notes_id], relation:[id], onDelete:Cascade)
+  tags tags @relation(fields:[tags_id], relation:[id], onDelete:Cascade)
+  
+}
