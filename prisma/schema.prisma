@@ -18,6 +18,10 @@ model Users {
   email     String   @unique
   password_hash  String
   createdAt DateTime @default(now())
+
+  notes Notes[]
+  tags  Tags[]
+  conversations AI_Conversation[]
 }
 model Notes {
   id        Int      @id @default(autoincrement())
@@ -26,14 +30,20 @@ model Notes {
   bg_color String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-   users_Id Int
+   users_Id Int 
+
+   note_tags Note_Tags[]
+
   users   Users @relation(fields: [users_Id], references: [id], onDelete: Cascade)
 }
 
 model Tags {
   id Int @id@default(autoincrement)
-  tag_name String @unique
+  tag_name String 
   users_id  Int
+
+  note_tags Note_Tags[]
+
   user Users @relation(fields:[users_id],references:[id],onDelete:Cascade)
 }
 
