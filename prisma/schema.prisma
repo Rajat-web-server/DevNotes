@@ -38,7 +38,7 @@ model Notes {
 }
 
 model Tags {
-  id Int @id@default(autoincrement)
+  id  Int      @id @default(autoincrement())
   tag_name String 
   users_id  Int
 
@@ -57,6 +57,7 @@ model AI_Conversation {
 } 
 
 model Note_Tags{
+  id Int @id @default(autoincrement())
   notes_id Int
   tags_id  Int
 
