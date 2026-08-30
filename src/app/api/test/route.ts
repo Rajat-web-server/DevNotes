@@ -3,28 +3,34 @@ import prisma from "@/lib/prisma";
 
 export function GET(): NextResponse {
   try {
-    const users =  prisma.users.findMany();
-    return NextResponse.json(
-        {
+    const users = prisma.users.findMany();
+    return NextResponse.json({
       message: "Devnotes APi is working",
-      users : users,
+      users: users,
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: error },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 
-export async function POST(request:NextRequest):Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  try {
+    const body = await request.json();
 
-    const body= await request.json()
-
-  return NextResponse.json({
-    message: "Creating Data",
-    body: body
-  });
+    return NextResponse.json({
+      message: "Creating Data",
+      body: body,
+    });
+  } catch (err) {
+    console.log(err)
+    return NextResponse.json(
+      {
+        message: "There's an error",
+        error: err instanceof Error ? err.message : "Unknown error",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function PUT(): Promise<NextResponse> {
