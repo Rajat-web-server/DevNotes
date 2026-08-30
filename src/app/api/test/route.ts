@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function GET(): Promise<NextResponse> {
+export function GET(): NextResponse {
   try {
-    const users = await prisma.users.findMany();
+    const users =  prisma.users.findMany();
     return NextResponse.json(
         {
       message: "Devnotes APi is working",
@@ -17,9 +17,13 @@ export async function GET(): Promise<NextResponse> {
   }
 }
 
-export async function POST(): Promise<NextResponse> {
+export async function POST(request:NextRequest):Promise<NextResponse> {
+
+    const body= await request.json()
+
   return NextResponse.json({
     message: "Creating Data",
+    body: body
   });
 }
 
