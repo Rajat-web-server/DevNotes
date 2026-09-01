@@ -37,9 +37,9 @@ export async function GET(
 export async function PUT(
   request: NextRequest,
   {
-    params,
+    params
   }: {
-    promise: params<id>;
+    params: Promise<{id:string}>;
   },
 ) {
   try {
