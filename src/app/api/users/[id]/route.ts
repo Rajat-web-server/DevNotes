@@ -37,15 +37,15 @@ export async function GET(
 export async function PUT(
   request: NextRequest,
   {
-    params
+    params,
   }: {
-    params: Promise<{id:string}>;
+    params: Promise<{ id: string }>;
   },
 ) {
   try {
     const { id } = await params;
     const body = await request.json();
-    const  updatedUser  = await prisma.users.update({
+    const updatedUser = await prisma.users.update({
       where: {
         id: Number(id),
       },
@@ -54,12 +54,15 @@ export async function PUT(
         email: body.email,
       },
     });
-    return NextResponse.json({
-      message: "User updated successfully!",
-      user: updatedUser,
-    },{
-        status:500
-    });
+    return NextResponse.json(
+      {
+        message: "User updated successfully!",
+        user: updatedUser,
+      },
+      {
+        status: 500,
+      },
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json(
@@ -70,6 +73,43 @@ export async function PUT(
       {
         status: 500,
       },
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  },
+) {
+  try {
+    const { id } = await params;
+
+    const deleteUser = await prisma.users.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+    if (!deleteUser) {
+      return NextResponse.json({
+        message: "The user is not there",
+      });
+    }
+    return NextResponse.json({
+      message: "The user has been deleted",
+      user: deleteUser,
+    });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      {
+        message: "There has been an error",
+        error,
+      },
+      { status: 500 },
     );
   }
 }
