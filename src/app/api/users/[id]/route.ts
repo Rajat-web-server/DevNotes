@@ -54,13 +54,15 @@ export async function PUT(
         email: body.email,
       },
     });
+    // console.log(body)
+    // console.log(updatedUser)
     return NextResponse.json(
       {
         message: "User updated successfully!",
         user: updatedUser,
       },
       {
-        status: 500,
+        status: 201,
       },
     );
   } catch (error) {

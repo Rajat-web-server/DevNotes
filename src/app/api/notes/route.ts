@@ -36,6 +36,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       notes: note,
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         message: "There's an error",
