@@ -2,6 +2,23 @@ import { NextResponse, NextRequest } from "next/server";
 import { hash } from "bcryptjs";
 import prisma from "@/lib/prisma";
 
+export  function GET():NextResponse{
+    try{
+        
+        return NextResponse.json({
+            message:"This is the signup page"
+        })
+    }
+    catch(error){
+        console.log(error);
+        return NextResponse.json({
+            message:"There's an error",
+            error
+        })
+    }
+
+}
+
 export async  function POST(request:NextRequest){
     try{
         const body = await request.json();
