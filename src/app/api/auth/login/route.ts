@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { compare } from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { createToken } from "@/lib/auth";
 
 export function GET(): NextResponse {
   try {
@@ -35,22 +36,23 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         { status: 401 },
       );
     }
-
+    
     const comparePassword = await compare(password, user.password_hash);
-
+    
     if(!comparePassword){
-         return NextResponse.json(
-        {
-          message: "Invalid email or password",
-        },
-        { status: 401 }
-      );
+        return NextResponse.json(
+            {
+                message: "Invalid email or password",
+            },
+            { status: 401 }
+        );
     }
+    const token = await createToken(user.id)
 
     return NextResponse.json(
       {
         message: "The Login has been done",
-
+        token: token,
         data: {
           email: user.email,
           name: user.name,
