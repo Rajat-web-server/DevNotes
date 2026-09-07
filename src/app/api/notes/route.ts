@@ -2,9 +2,17 @@ import { NextResponse, NextRequest } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
-    const notes = await prisma.notes.findMany();
+    const userId = await getCurrentUser(request);
+    if (!userId) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const notes = await prisma.notes.findMany({
+      where: {
+        users_Id: Number(userId),
+      },
+    });
 
     return NextResponse.json(
       {
@@ -28,12 +36,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // }
     // const payload = await verifyToken(token);
     const userId = await getCurrentUser(request);
-      if (!userId) {
+    if (!userId) {
       return NextResponse.json(
         {
           message: "Unauthorized",
         },
-        { status: 401 }
+        { status: 401 },
       );
     }
     const body = await request.json();
