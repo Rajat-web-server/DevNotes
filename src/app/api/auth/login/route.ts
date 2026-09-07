@@ -49,7 +49,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
     const token = await createToken(user.id)
 
-    return NextResponse.json(
+const response = NextResponse.json(
       {
         message: "The Login has been done",
         token: token,
@@ -62,6 +62,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         status: 201,
       },
     );
+    response.cookies.set("token",token,{
+        httpOnly:true,
+        secure:process.env.NODE_ENV==="production",
+        sameSite:"lax",
+        maxAge: 60*60*24,
+        path:"/",
+})
   } catch (error) {
     console.log(error);
     return NextResponse.json({
