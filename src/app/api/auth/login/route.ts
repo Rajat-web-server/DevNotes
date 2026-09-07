@@ -36,20 +36,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         { status: 401 },
       );
     }
-    
-    const comparePassword = await compare(password, user.password_hash);
-    
-    if(!comparePassword){
-        return NextResponse.json(
-            {
-                message: "Invalid email or password",
-            },
-            { status: 401 }
-        );
-    }
-    const token = await createToken(user.id)
 
-const response = NextResponse.json(
+    const comparePassword = await compare(password, user.password_hash);
+
+    if (!comparePassword) {
+      return NextResponse.json(
+        {
+          message: "Invalid email or password",
+        },
+        { status: 401 },
+      );
+    }
+    const token = await createToken(user.id);
+
+    const response = NextResponse.json(
       {
         message: "The Login has been done",
         token: token,
@@ -62,13 +62,14 @@ const response = NextResponse.json(
         status: 201,
       },
     );
-    response.cookies.set("token",token,{
-        httpOnly:true,
-        secure:process.env.NODE_ENV==="production",
-        sameSite:"lax",
-        maxAge: 60*60*24,
-        path:"/",
-})
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24,
+      path: "/",
+    });
+    return response;
   } catch (error) {
     console.log(error);
     return NextResponse.json({

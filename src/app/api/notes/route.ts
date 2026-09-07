@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
+import { verifyToken } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 export async function GET(): Promise<NextResponse> {
@@ -21,14 +22,18 @@ export async function GET(): Promise<NextResponse> {
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
+    const token = request.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const payload = await verifyToken(token);
     const body = await request.json();
-
     const note = await prisma.notes.create({
       data: {
         title: body.title,
         content: body.content,
         bg_color: body.bg_color,
-        users_Id: body.users_Id,
+        users_Id: Number(payload.userId),
       },
     });
     return NextResponse.json({
@@ -42,7 +47,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         message: "There's an error",
         error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 },
+      { status: 401 },
     );
   }
 }
