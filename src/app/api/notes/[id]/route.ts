@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function GET(
   request: NextRequest,
@@ -10,10 +11,20 @@ export async function GET(
   },
 ) {
   try {
+    const userId = await getCurrentUser(request);
+    if (!userId) {
+      return NextResponse.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 401 },
+      );
+    }
     const { id } = await params;
     const note = await prisma.notes.findUnique({
       where: {
         id: Number(id),
+        users_Id: Number(userId),
       },
     });
     if (!note) {
@@ -43,11 +54,21 @@ export async function PUT(
   },
 ) {
   try {
+    const userId = await getCurrentUser(request);
+    if (!userId) {
+      return NextResponse.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 401 },
+      );
+    }
     const { id } = await params;
     const body = await request.json();
     const updatedNote = await prisma.notes.update({
       where: {
         id: Number(id),
+        users_Id: Number(userId),
       },
       data: {
         title: body.title,
@@ -89,11 +110,21 @@ export async function DELETE(
   },
 ) {
   try {
+    const userId = await getCurrentUser(request);
+    if (!userId) {
+      return NextResponse.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 401 },
+      );
+    }
     const { id } = await params;
 
     const deleteNote = await prisma.notes.delete({
       where: {
         id: Number(id),
+        users_Id: Number(userId),
       },
     });
     if (!deleteNote) {
